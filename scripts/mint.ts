@@ -1,5 +1,6 @@
 import { ethers } from "hardhat";
 import { Contract } from "ethers";
+import { Buffer } from 'buffer';
 
 async function main() {
   const [owner] = await ethers.getSigners();
@@ -374,9 +375,11 @@ async function main() {
       type: "function",
     },
   ];
+  const content = "<html><body><h1>This is test HTML file</h1></body></html>"
+  const encoded = Buffer.from(content).toString('base64') ;
   const tokenId = 2;
   const tokenContract = new Contract(contractAddress, contractAbi, owner);
-  await tokenContract.mint(tokenId, "name", "description", "image", "url");
+  await tokenContract.mint(tokenId, "name", "description", "image", "data:text/html;charset=UTF-8;base64, " + encoded);
   const tokenInfo = await tokenContract.tokenURI(tokenId);
   console.log(tokenInfo);
 }
